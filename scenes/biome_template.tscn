@@ -1,6 +1,5 @@
-[gd_scene load_steps=9 format=3 uid="uid://dc06a0uiwajg"]
+[gd_scene load_steps=8 format=3 uid="uid://dc06a0uiwajg"]
 
-[ext_resource type="Script" path="res://scripts/debug_camera.gd" id="1_6btf4"]
 [ext_resource type="Script" path="res://scripts/tile_world.gd" id="2_heltt"]
 [ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
 [ext_resource type="Script" path="res://scripts/curve_octave.gd" id="3_ho2oa"]
@@ -30,15 +29,11 @@ enabled = true
 
 [node name="BiomeTemplate" type="Node2D"]
 
-[node name="DebugCamera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
-script = ExtResource("1_6btf4")
-
 [node name="TileWorld" type="TileMap" parent="." node_paths=PackedStringArray("camera")]
 tile_set = ExtResource("2_narmt")
 rendering_quadrant_size = 8
 format = 2
 script = ExtResource("2_heltt")
-camera = NodePath("../DebugCamera2D")
+camera = NodePath("")
 curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_osuej"), SubResource("Curve_2bi7i")])
 noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])

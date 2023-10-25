@@ -5,20 +5,27 @@ extends TileMap
 
 @export var zoneWidth:int = 1000
 @export var zoneHeight:int = 200
+var zoneBorder:int = min(zoneWidth, zoneHeight) / 10
 
 @export var curveOctaves: Array[CurveOctave] = []
 @export var noiseOctaves: Array[NoiseOctave] = []
 
+@export var generateViewportCells:bool = false
+
 var tileSize:int = tile_set.tile_size.x
 
-#func _ready() -> void:
-	#for x:int in range(-borderSize, zoneWidth + borderSize):
-		#for y:int in range(-borderSize, zoneHeight + borderSize):
-			#generate_tile(Vector2i(x,y))
+func _ready() -> void:
+	for x:int in range(-zoneBorder, zoneWidth + zoneBorder):
+		for y:int in range(-zoneBorder, zoneHeight + zoneBorder):
+			generate_tile(Vector2i(x,y))
 
 func _process(_delta: float) -> void:
+	
+	if not generateViewportCells:
+		return
+	
 	var visibleRect:Rect2 = get_viewport().get_visible_rect()
-	visibleRect = visibleRect.grow(tileSize * 2 + visibleRect.size.x / 2 * 1 / camera.zoom.x)
+	# visibleRect = visibleRect.grow(tileSize * 2 + visibleRect.size.x / 2 * 1 / camera.zoom.x)
 	var center:Vector2 = camera.get_screen_center_position()
 	visibleRect.position = center - visibleRect.size / 2
 
@@ -27,6 +34,7 @@ func _process(_delta: float) -> void:
 			var x:int = visibleRect.position.x + (i * tileSize)
 			var y:int = visibleRect.position.y + (j * tileSize)
 			var tilePos:Vector2i = local_to_map(Vector2(x, y))
+			
 			if get_cell_source_id(0, tilePos) == -1:
 				generate_tile(tilePos)
 

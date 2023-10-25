@@ -3,15 +3,6 @@ extends Camera2D
 
 @export var speed:float = 50
 
-#func _input(event: InputEvent) -> void:
-	#if event is InputEventKey and event.scancode == KEY_K:
-		#zoom.x *= 2;
-		#zoom.y *= 2;
-#
-	#if event is InputEventKey and event.scancode == KEY_L:
-		#zoom.x /= 2;
-		#zoom.y /= 2;
-
 func _unhandled_input(event:InputEvent) -> void:
 	if event is InputEventKey:
 		var inputEventKey:InputEventKey = event as InputEventKey

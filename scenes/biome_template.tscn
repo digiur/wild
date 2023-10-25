@@ -1,0 +1,44 @@
+[gd_scene load_steps=9 format=3 uid="uid://dc06a0uiwajg"]
+
+[ext_resource type="Script" path="res://scripts/debug_camera.gd" id="1_6btf4"]
+[ext_resource type="Script" path="res://scripts/tile_world.gd" id="2_heltt"]
+[ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
+[ext_resource type="Script" path="res://scripts/curve_octave.gd" id="3_ho2oa"]
+[ext_resource type="Script" path="res://scripts/noise_octave.gd" id="4_4wcvl"]
+
+[sub_resource type="Curve" id="Curve_osuej"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.502851, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+script = ExtResource("3_ho2oa")
+amp = 1.0
+freq = 1.0
+enabled = true
+
+[sub_resource type="Curve" id="Curve_2bi7i"]
+_data = [Vector2(0.244014, 1), 0.0, 0.0, 0, 0, Vector2(0.255416, 0), 0.0, 0.0, 0, 0, Vector2(0.748005, 0), 0.0, 0.0, 0, 0, Vector2(0.752566, 1), 0.0, 0.0, 0, 0]
+point_count = 4
+script = ExtResource("3_ho2oa")
+amp = 0.5
+freq = 2.0
+enabled = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5oice"]
+script = ExtResource("4_4wcvl")
+amp = 0.5
+scale = 1000.0
+enabled = true
+
+[node name="BiomeTemplate" type="Node2D"]
+
+[node name="DebugCamera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+script = ExtResource("1_6btf4")
+
+[node name="TileWorld" type="TileMap" parent="." node_paths=PackedStringArray("camera")]
+tile_set = ExtResource("2_narmt")
+rendering_quadrant_size = 8
+format = 2
+script = ExtResource("2_heltt")
+camera = NodePath("../DebugCamera2D")
+curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_osuej"), SubResource("Curve_2bi7i")])
+noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])

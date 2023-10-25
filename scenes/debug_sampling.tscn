@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://salu5nkys1yk"]
+
+[ext_resource type="Script" path="res://scripts/debug_sampling.gd" id="1_53cwv"]
+
+[sub_resource type="Curve" id="Curve_y7nq3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jeoum"]
+noise_type = 0
+fractal_octaves = 1
+
+[node name="DebugSampling" type="Node"]
+script = ExtResource("1_53cwv")
+curve = SubResource("Curve_y7nq3")
+noise = SubResource("FastNoiseLite_jeoum")

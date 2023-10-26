@@ -5,10 +5,16 @@ extends TileMap
 
 @export var zoneWidth:int = 1000
 @export var zoneHeight:int = 200
-var zoneBorder:int = min(zoneWidth, zoneHeight) / 10
+@export var zonePos:Vector2i = Vector2i(0,0)
+@export var zoneBorder:int = 10
 
 @export var curveOctaves: Array[CurveOctave] = []
 @export var noiseOctaves: Array[NoiseOctave] = []
+@export var soilOctave:CurveOctave
+
+@export var rockTilemapVector:Vector2i
+@export var soilTilemapVector:Vector2i
+@export var emptyTilemapVector:Vector2i
 
 @export var generateViewportCells:bool = false
 
@@ -39,7 +45,7 @@ func _process(_delta: float) -> void:
 				generate_tile(tilePos)
 
 func generate_tile(tilePos:Vector2i) -> void:
-	var localPos:Vector2 = map_to_local(tilePos)
+	var localPos:Vector2 = map_to_local(zonePos + tilePos)
 	var worldPos:Vector2 = Vector2.ZERO
 	worldPos.x = localPos.x / zoneWidth / tileSize
 	worldPos.y = -localPos.y / zoneHeight / tileSize
@@ -58,8 +64,12 @@ func generate_tile(tilePos:Vector2i) -> void:
 	elevation /= ampSum
 	elevation -= 1
 	elevation *= 0.5
+	
+	var soil:float = soilOctave.sampleOctave(worldPos.x)
 
 	if worldPos.y > elevation:
-		set_cell(0, tilePos, 0, Vector2i(0,3))
+		set_cell(0, tilePos, 0, emptyTilemapVector)
+	elif worldPos.y < elevation - soil:
+		set_cell(0, tilePos, 0, rockTilemapVector)
 	else:
-		set_cell(0, tilePos, 0, Vector2i(1,1))
+		set_cell(0, tilePos, 0, soilTilemapVector)

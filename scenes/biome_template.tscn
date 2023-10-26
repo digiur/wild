@@ -29,11 +29,10 @@ enabled = true
 
 [node name="BiomeTemplate" type="Node2D"]
 
-[node name="TileWorld" type="TileMap" parent="." node_paths=PackedStringArray("camera")]
+[node name="TileZone" type="TileMap" parent="."]
 tile_set = ExtResource("2_narmt")
 rendering_quadrant_size = 8
 format = 2
 script = ExtResource("2_heltt")
-camera = NodePath("")
 curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_osuej"), SubResource("Curve_2bi7i")])
 noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])

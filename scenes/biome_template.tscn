@@ -4,26 +4,19 @@
 [ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
 [ext_resource type="Script" path="res://scripts/curve_octave.gd" id="3_ho2oa"]
 [ext_resource type="Script" path="res://scripts/noise_octave.gd" id="4_4wcvl"]
+[ext_resource type="Script" path="res://scripts/debug_camera.gd" id="5_532jq"]
 
-[sub_resource type="Curve" id="Curve_osuej"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.502851, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_n7sup"]
+_data = [Vector2(0.203704, 0.901099), 0.0, 0.0, 0, 0, Vector2(0.402778, 0.450549), 0.0, 0.0, 0, 0, Vector2(0.615741, 0.923077), 0.0, 0.0, 0, 0]
 point_count = 3
 script = ExtResource("3_ho2oa")
-amp = 1.0
+amp = 0.5
 freq = 1.0
 enabled = true
 
-[sub_resource type="Curve" id="Curve_2bi7i"]
-_data = [Vector2(0.244014, 1), 0.0, 0.0, 0, 0, Vector2(0.255416, 0), 0.0, 0.0, 0, 0, Vector2(0.748005, 0), 0.0, 0.0, 0, 0, Vector2(0.752566, 1), 0.0, 0.0, 0, 0]
-point_count = 4
-script = ExtResource("3_ho2oa")
-amp = 0.5
-freq = 2.0
-enabled = true
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5oice"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lx4mu"]
 script = ExtResource("4_4wcvl")
-amp = 0.5
+amp = 0.2
 scale = 1000.0
 enabled = true
 
@@ -34,6 +27,11 @@ tile_set = ExtResource("2_narmt")
 rendering_quadrant_size = 8
 format = 2
 script = ExtResource("2_heltt")
-camera = NodePath("")
-curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_osuej"), SubResource("Curve_2bi7i")])
-noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])
+camera = NodePath("../DebugCamera2D")
+zoneWidth = 100
+zoneHeight = 100
+curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_n7sup")])
+noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_lx4mu")])
+
+[node name="DebugCamera2D" type="Camera2D" parent="."]
+script = ExtResource("5_532jq")

@@ -6,7 +6,6 @@ extends TileMap
 @export var zoneWidth:int = 1000
 @export var zoneHeight:int = 200
 var zoneBorder:int = min(zoneWidth, zoneHeight) / 10
-
 @export var curveOctaves: Array[CurveOctave] = []
 @export var noiseOctaves: Array[NoiseOctave] = []
 
@@ -14,16 +13,18 @@ var zoneBorder:int = min(zoneWidth, zoneHeight) / 10
 
 var tileSize:int = tile_set.tile_size.x
 
+@export var topsoil:float = 0.2
+
 func _ready() -> void:
-	for x:int in range(-zoneBorder, zoneWidth + zoneBorder):
-		for y:int in range(-zoneBorder, zoneHeight + zoneBorder):
+	for x:int in range(zoneWidth):
+		for y:int in range(zoneHeight):
 			generate_tile(Vector2i(x,y))
 
 func _process(_delta: float) -> void:
-	
+
 	if not generateViewportCells:
 		return
-	
+
 	var visibleRect:Rect2 = get_viewport().get_visible_rect()
 	# visibleRect = visibleRect.grow(tileSize * 2 + visibleRect.size.x / 2 * 1 / camera.zoom.x)
 	var center:Vector2 = camera.get_screen_center_position()
@@ -34,7 +35,7 @@ func _process(_delta: float) -> void:
 			var x:int = visibleRect.position.x + (i * tileSize)
 			var y:int = visibleRect.position.y + (j * tileSize)
 			var tilePos:Vector2i = local_to_map(Vector2(x, y))
-			
+
 			if get_cell_source_id(0, tilePos) == -1:
 				generate_tile(tilePos)
 
@@ -60,6 +61,8 @@ func generate_tile(tilePos:Vector2i) -> void:
 	elevation *= 0.5
 
 	if worldPos.y > elevation:
+		set_cell(0, tilePos, 0, Vector2i(3,0))
+	elif worldPos.y < elevation-topsoil:
 		set_cell(0, tilePos, 0, Vector2i(0,3))
 	else:
 		set_cell(0, tilePos, 0, Vector2i(1,1))

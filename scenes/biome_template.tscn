@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dc06a0uiwajg"]
+[gd_scene load_steps=12 format=3 uid="uid://dc06a0uiwajg"]
 
 [ext_resource type="Script" path="res://scripts/tile_world.gd" id="2_heltt"]
 [ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
@@ -33,8 +33,8 @@ min_value = -1.0
 _data = [Vector2(0, -1), 0.0, 2.8, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 script = ExtResource("3_ho2oa")
-amp = 0.25
-freq = 1.0
+amp = 1.0
+freq = 0.5
 enabled = true
 wrapMode = 1
 sampleSpace = 0
@@ -47,7 +47,7 @@ enabled = false
 
 [sub_resource type="Curve" id="Curve_074pv"]
 min_value = -1.0
-_data = [Vector2(0, -0.0033195), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 script = ExtResource("3_ho2oa")
 amp = 0.5
@@ -55,6 +55,12 @@ freq = 1.5
 enabled = true
 wrapMode = 1
 sampleSpace = 1
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t3xcm"]
+script = ExtResource("4_4wcvl")
+amp = 0.25
+scale = 1000.0
+enabled = true
 
 [node name="BiomeTemplate" type="Node2D"]
 
@@ -64,10 +70,11 @@ format = 2
 script = ExtResource("2_heltt")
 zoneSize = Vector2i(100, 50)
 curveSize = Vector2i(15, 15)
-curveOffset = Vector2i(75, 0)
+curveOffset = Vector2i(60, 0)
 curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_sf1iy"), SubResource("Curve_ms1eu"), SubResource("Curve_qpn1s")])
 noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])
 soilOctave = SubResource("Curve_074pv")
+soilNoiseOctave = SubResource("FastNoiseLite_t3xcm")
 rockTilemapVector = Vector2i(0, 3)
 soilTilemapVector = Vector2i(1, 1)
 emptyTilemapVector = Vector2i(2, 3)

@@ -12,6 +12,7 @@ enum TileType {ROCK, SOIL, EMPTY}
 @export var curveOctaves: Array[CurveOctave] = []
 @export var noiseOctaves: Array[NoiseOctave] = []
 @export var soilOctave:CurveOctave
+@export var soilNoiseOctave:NoiseOctave
 
 @export_group("Tiles")
 @export var rockTilemapVector:Vector2i
@@ -100,18 +101,24 @@ func curve_to_elevation(curvePos:Vector2, zonePos:Vector2) -> float:
 	for octave:CurveOctave in curveOctaves:
 		var i:float = curvePos.x if octave.sampleSpace == GameInfo.SampleSpace.CURVE else zonePos.x
 		elevation += octave.sampleOctave(i)
-		ampSum += octave.amp
+		ampSum += octave.amp if octave.enabled else 0
 
 	for octave:NoiseOctave in noiseOctaves:
 		elevation += octave.sampleOctave(zonePos.x)
-		ampSum += octave.amp
+		ampSum += octave.amp if octave.enabled else 0
 
 	return elevation / ampSum
 
 
 func curve_to_soil(curvePos:Vector2, zonePos:Vector2) -> float:
 	var i:float = curvePos.x if soilOctave.sampleSpace == GameInfo.SampleSpace.CURVE else zonePos.x
-	return soilOctave.sampleOctave(i)
+	var soil:float = soilOctave.sampleOctave(i)
+	var ampSum:float = soilOctave.amp if soilOctave.enabled else 0
+	
+	soil += soilNoiseOctave.sampleOctave(zonePos.x)
+	ampSum += soilNoiseOctave.amp if soilNoiseOctave.enabled else 0
+	
+	return soil / ampSum
 
 
 func _input(event:InputEvent) -> void:

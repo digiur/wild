@@ -11,4 +11,4 @@ func _init() -> void:
 		seed = randi()
 
 func sampleOctave(i:float) -> float:
-	return amp * get_noise_1d(i * scale) if enabled else 0
+	return amp * get_noise_1d(i * scale) * (enabled as int)

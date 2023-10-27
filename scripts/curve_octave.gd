@@ -8,6 +8,7 @@ enum CurveWrapMode {WRAP, MIRROR, FLIP, FLAT}
 @export var freq:float = 1
 @export var enabled:bool = true
 @export var wrapMode:CurveWrapMode = CurveWrapMode.WRAP
+@export var sampleSpace:GameInfo.SampleSpace = GameInfo.SampleSpace.CURVE
 
 func _init() -> void:
 	min_value = -1
@@ -15,12 +16,11 @@ func _init() -> void:
 
 func sampleOctave(i:float) -> float:
 
-	#print(i)
 	match wrapMode:
 		CurveWrapMode.WRAP:
 			i = fposmod(i * freq, 1)
 		CurveWrapMode.MIRROR:
-			i = fposmod(absf(i - 0.5) * freq, 1)
+			i = fposmod(absf(i - 0.5) * freq * 2, 1)
 		CurveWrapMode.FLIP:
 			if floori(i) % 2 == 0:
 				i = fposmod(i * freq, 1)
@@ -33,6 +33,5 @@ func sampleOctave(i:float) -> float:
 				i = 0
 			else:
 				i = fposmod(i * freq, 1)
-	#print(i)
 
 	return amp * sample(i) * (enabled as int)

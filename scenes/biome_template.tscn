@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dc06a0uiwajg"]
+[gd_scene load_steps=11 format=3 uid="uid://dc06a0uiwajg"]
 
 [ext_resource type="Script" path="res://scripts/tile_world.gd" id="2_heltt"]
 [ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
@@ -8,13 +8,14 @@
 
 [sub_resource type="Curve" id="Curve_sf1iy"]
 min_value = -1.0
-_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.506775, 1), 0.0, 0.0, 0, 0, Vector2(0.509485, 0.00419736), 0.0, 0.0, 0, 0, Vector2(0.99998, -1), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0, -1), 0.0, 2.8, 0, 0, Vector2(0.99729, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, -1), 0.0, 0.0, 0, 0]
+point_count = 3
 script = ExtResource("3_ho2oa")
 amp = 1.0
 freq = 1.0
 enabled = true
-wrapMode = 0
+wrapMode = 2
+sampleSpace = 1
 
 [sub_resource type="Curve" id="Curve_ms1eu"]
 min_value = -1.0
@@ -22,9 +23,21 @@ _data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.244095, -1), 0.0, 0.0, 0, 0, 
 point_count = 5
 script = ExtResource("3_ho2oa")
 amp = 1.0
+freq = 0.5
+enabled = true
+wrapMode = 3
+sampleSpace = 0
+
+[sub_resource type="Curve" id="Curve_qpn1s"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 2.8, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("3_ho2oa")
+amp = 0.25
 freq = 1.0
-enabled = false
-wrapMode = 0
+enabled = true
+wrapMode = 1
+sampleSpace = 0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5oice"]
 script = ExtResource("4_4wcvl")
@@ -34,13 +47,14 @@ enabled = false
 
 [sub_resource type="Curve" id="Curve_074pv"]
 min_value = -1.0
-_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -0.0033195), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 script = ExtResource("3_ho2oa")
-amp = 1.0
-freq = 1.0
-enabled = false
-wrapMode = 0
+amp = 0.5
+freq = 1.5
+enabled = true
+wrapMode = 1
+sampleSpace = 1
 
 [node name="BiomeTemplate" type="Node2D"]
 
@@ -48,9 +62,10 @@ wrapMode = 0
 tile_set = ExtResource("2_narmt")
 format = 2
 script = ExtResource("2_heltt")
-zoneSize = Vector2i(11, 11)
-curveSize = Vector2i(11, 11)
-curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_sf1iy"), SubResource("Curve_ms1eu")])
+zoneSize = Vector2i(100, 50)
+curveSize = Vector2i(15, 15)
+curveOffset = Vector2i(75, 0)
+curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_sf1iy"), SubResource("Curve_ms1eu"), SubResource("Curve_qpn1s")])
 noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])
 soilOctave = SubResource("Curve_074pv")
 rockTilemapVector = Vector2i(0, 3)

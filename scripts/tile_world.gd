@@ -4,9 +4,9 @@ extends TileMap
 enum TileType {ROCK, SOIL, EMPTY}
 
 @export_group("Zone")
-@export var zoneSize:Vector2i = Vector2i(1000, 200)
-@export var curveSize:Vector2i = Vector2i(500, 100)
-@export var curveOffset:Vector2i = Vector2i(0,0)
+@export var zoneSize:Vector2i = Vector2i(70, 30)
+@export var curveSize:Vector2i = Vector2i(35, 15)
+@export var curveOffset:Vector2i = Vector2i(0, 0)
 
 @export_group("Curves")
 @export var curveOctaves: Array[CurveOctave] = []
@@ -24,11 +24,16 @@ enum TileType {ROCK, SOIL, EMPTY}
 @export var generateMouseRadius:int = 5
 
 @onready var tileSize:int = tile_set.tile_size.x
+@onready var zoneHalfSize:Vector2 = (zoneSize as Vector2) / 2
+@onready var curveHalfSize:Vector2 = (curveSize as Vector2) / 2
+@onready var finalCurveOffset:Vector2i = (((zoneSize as Vector2) - (curveSize as Vector2)) + (curveOffset as Vector2)) / 2
+
 
 func _ready() -> void:
 	for x:int in range(zoneSize.x):
 		for y:int in range(zoneSize.y):
 			set_tile(Vector2i(x,y), getTileType(Vector2i(x,y)))
+
 
 func _process(_delta: float) -> void:
 	if camera == null or not generateViewportCells:
@@ -47,6 +52,7 @@ func _process(_delta: float) -> void:
 			if get_cell_source_id(0, tilePos) == -1:
 				set_tile(tilePos, getTileType(tilePos))
 
+
 func set_tile(tilePos:Vector2i, tileType:TileType) -> void:
 	if tileType == TileType.EMPTY:
 		set_cell(0, tilePos, 0, emptyTilemapVector)
@@ -57,10 +63,10 @@ func set_tile(tilePos:Vector2i, tileType:TileType) -> void:
 
 
 func getTileType(tilePos:Vector2i) -> TileType:
-
 	var curvePos:Vector2 = map_to_curve(tilePos)
-	var elevation:float = curve_to_elevation(curvePos)
-	var soil:float = curve_to_soil(curvePos)
+	var zonePos:Vector2 = map_to_zone(tilePos)
+	var elevation:float = curve_to_elevation(curvePos, zonePos)
+	var soil:float = curve_to_soil(curvePos, zonePos)
 
 	if curvePos.y > elevation + (soil if soil >= 0 else 0.0):
 		return TileType.EMPTY
@@ -71,28 +77,42 @@ func getTileType(tilePos:Vector2i) -> TileType:
 	else:
 		return TileType.SOIL
 
+
+func map_to_zone(tilePos:Vector2i) -> Vector2:
+	var zonePos:Vector2 = Vector2.ZERO
+	zonePos.x = (tilePos.x as float + 0.5) / (zoneSize.x as float)
+	zonePos.y = (2 * (zoneHalfSize.y - (tilePos.y as float + 0.5))) / (zoneSize.y  as float)
+	return zonePos
+
+
 func map_to_curve(tilePos:Vector2i) -> Vector2:
 	var curvePos:Vector2 = Vector2.ZERO
-	curvePos.x = (tilePos.x as float) / (curveSize.x as float)
-	curvePos.y = ((curveSize.y/2 - tilePos.y) as float) / (curveSize.y  as float)
+	var curveTilePos:Vector2i = tilePos - finalCurveOffset
+	curvePos.x = (curveTilePos.x as float + 0.5) / (curveSize.x as float)
+	curvePos.y = ((curveHalfSize.y - (curveTilePos.y as float + 0.5))) / (curveSize.y  as float)
 	return curvePos
 
-func curve_to_elevation(curvePos:Vector2) -> float:
+
+func curve_to_elevation(curvePos:Vector2, zonePos:Vector2) -> float:
 	var elevation:float = 0
 	var ampSum:float = 0
 
 	for octave:CurveOctave in curveOctaves:
-		elevation += octave.sampleOctave(curvePos.x)
+		var i:float = curvePos.x if octave.sampleSpace == GameInfo.SampleSpace.CURVE else zonePos.x
+		elevation += octave.sampleOctave(i)
 		ampSum += octave.amp
 
 	for octave:NoiseOctave in noiseOctaves:
-		elevation += octave.sampleOctave(curvePos.x)
+		elevation += octave.sampleOctave(zonePos.x)
 		ampSum += octave.amp
 
 	return elevation / ampSum
 
-func curve_to_soil(curvePos:Vector2) -> float:
-	return soilOctave.sampleOctave(curvePos.x)
+
+func curve_to_soil(curvePos:Vector2, zonePos:Vector2) -> float:
+	var i:float = curvePos.x if soilOctave.sampleSpace == GameInfo.SampleSpace.CURVE else zonePos.x
+	return soilOctave.sampleOctave(i)
+
 
 func _input(event:InputEvent) -> void:
 	if event is InputEventKey:
@@ -107,9 +127,6 @@ func _input(event:InputEvent) -> void:
 		var mouseEvent:InputEventMouseButton = event as InputEventMouseButton
 		if mouseEvent.button_index == MOUSE_BUTTON_LEFT and mouseEvent.pressed:
 			var tilePos:Vector2i = local_to_map(get_local_mouse_position())
-			var curvePos:Vector2 = Vector2.ZERO
-			curvePos.x = (tilePos.x as float) / (curveSize.x as float)
-			curvePos.y = (((curveSize.y / 2 - tilePos.y) * 2) as float) / (curveSize.y  as float)
-			print(".")
-			print("tilePos ",tilePos)
-			print("curvePos ",curvePos)
+			var zonePos:Vector2 = map_to_zone(tilePos)
+			var curvePos:Vector2 = map_to_curve(tilePos)
+

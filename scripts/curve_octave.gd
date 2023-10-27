@@ -4,8 +4,8 @@ extends Curve
 
 enum CurveWrapMode {WRAP, MIRROR, FLIP, FLAT}
 
-@export var amp:float = 0.5
-@export var freq:float = 2
+@export var amp:float = 1
+@export var freq:float = 1
 @export var enabled:bool = true
 @export var wrapMode:CurveWrapMode = CurveWrapMode.WRAP
 
@@ -15,7 +15,7 @@ func _init() -> void:
 
 func sampleOctave(i:float) -> float:
 
-	print(i)
+	#print(i)
 	match wrapMode:
 		CurveWrapMode.WRAP:
 			i = fposmod(i * freq, 1)
@@ -33,6 +33,6 @@ func sampleOctave(i:float) -> float:
 				i = 0
 			else:
 				i = fposmod(i * freq, 1)
-	print(i)
+	#print(i)
 
 	return amp * sample(i) * (enabled as int)

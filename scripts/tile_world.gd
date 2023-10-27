@@ -1,13 +1,12 @@
-class_name TileWorld
+class_name TileZone
 extends TileMap
 
-@export_group("Zone")
-@export var curveSize:Vector2i = Vector2i(1000, 200)
+enum TileType {ROCK, SOIL, EMPTY}
 
-@export var genLeft:int = 0
-@export var genRight:int = 0
-@export var genUp:int = 0
-@export var genDown:int = 0
+@export_group("Zone")
+@export var zoneSize:Vector2i = Vector2i(1000, 200)
+@export var curveSize:Vector2i = Vector2i(500, 100)
+@export var curveOffset:Vector2i = Vector2i(0,0)
 
 @export_group("Curves")
 @export var curveOctaves: Array[CurveOctave] = []
@@ -22,16 +21,16 @@ extends TileMap
 @export_group("Debug")
 @export var camera:Camera2D
 @export var generateViewportCells:bool = false
+@export var generateMouseRadius:int = 5
 
 @onready var tileSize:int = tile_set.tile_size.x
 
 func _ready() -> void:
-	for x:int in range(-genLeft, curveSize.x + genRight):
-		for y:int in range(-genUp, curveSize.y + genDown):
-			generate_tile(Vector2i(x,y))
+	for x:int in range(zoneSize.x):
+		for y:int in range(zoneSize.y):
+			set_tile(Vector2i(x,y), getTileType(Vector2i(x,y)))
 
 func _process(_delta: float) -> void:
-
 	if camera == null or not generateViewportCells:
 		return
 
@@ -46,46 +45,71 @@ func _process(_delta: float) -> void:
 			var tilePos:Vector2i = local_to_map(Vector2(x, y))
 
 			if get_cell_source_id(0, tilePos) == -1:
-				generate_tile(tilePos)
+				set_tile(tilePos, getTileType(tilePos))
 
-func generate_tile(tilePos:Vector2i) -> void:
-	var worldPos:Vector2 = Vector2.ZERO
-	worldPos.x = (tilePos.x as float + 0.5) / curveSize.x as float + 0.5
-	worldPos.y = (-tilePos.y as float + 0.5) / curveSize.y  as float
+func set_tile(tilePos:Vector2i, tileType:TileType) -> void:
+	if tileType == TileType.EMPTY:
+		set_cell(0, tilePos, 0, emptyTilemapVector)
+	if tileType == TileType.ROCK:
+		set_cell(0, tilePos, 0, rockTilemapVector)
+	if tileType == TileType.SOIL:
+		set_cell(0, tilePos, 0, soilTilemapVector)
 
+
+func getTileType(tilePos:Vector2i) -> TileType:
+
+	var curvePos:Vector2 = map_to_curve(tilePos)
+	var elevation:float = curve_to_elevation(curvePos)
+	var soil:float = curve_to_soil(curvePos)
+
+	if curvePos.y > elevation + (soil if soil >= 0 else 0.0):
+		return TileType.EMPTY
+
+	elif curvePos.y < elevation + (soil if soil <= 0 else 0.0):
+		return TileType.ROCK
+
+	else:
+		return TileType.SOIL
+
+func map_to_curve(tilePos:Vector2i) -> Vector2:
+	var curvePos:Vector2 = Vector2.ZERO
+	curvePos.x = (tilePos.x as float) / (curveSize.x as float)
+	curvePos.y = ((curveSize.y/2 - tilePos.y) as float) / (curveSize.y  as float)
+	return curvePos
+
+func curve_to_elevation(curvePos:Vector2) -> float:
 	var elevation:float = 0
 	var ampSum:float = 0
 
 	for octave:CurveOctave in curveOctaves:
-		elevation += octave.sampleOctave(worldPos.x)
+		elevation += octave.sampleOctave(curvePos.x)
 		ampSum += octave.amp
 
 	for octave:NoiseOctave in noiseOctaves:
-		elevation += octave.sampleOctave(worldPos.x)
+		elevation += octave.sampleOctave(curvePos.x)
 		ampSum += octave.amp
 
-	elevation /= ampSum
-	elevation -= 1
-	elevation *= 0.5
+	return elevation / ampSum
 
-	var soil:float = soilOctave.sampleOctave(worldPos.x)
-
-	if worldPos.y > elevation + (soil if soil >= 0 else 0.0):
-		set_cell(0, tilePos, 0, emptyTilemapVector)
-
-	elif worldPos.y < elevation + (soil if soil <= 0 else 0.0):
-		set_cell(0, tilePos, 0, rockTilemapVector)
-
-	else:
-		set_cell(0, tilePos, 0, soilTilemapVector)
+func curve_to_soil(curvePos:Vector2) -> float:
+	return soilOctave.sampleOctave(curvePos.x)
 
 func _input(event:InputEvent) -> void:
 	if event is InputEventKey:
 		var keyEvent:InputEventKey = event as InputEventKey
 		if keyEvent.keycode == KEY_SPACE and (keyEvent.pressed or keyEvent.echo):
-			generate_tile(local_to_map(get_local_mouse_position()))
+			var tilePos:Vector2i = local_to_map(get_local_mouse_position())
+			for x:int in range(tilePos.x - generateMouseRadius, tilePos.x + generateMouseRadius):
+				for y:int in range(tilePos.y - generateMouseRadius, tilePos.y + generateMouseRadius):
+					set_tile(Vector2i(x,y), getTileType(Vector2i(x,y)))
 
 	if event is InputEventMouseButton:
 		var mouseEvent:InputEventMouseButton = event as InputEventMouseButton
 		if mouseEvent.button_index == MOUSE_BUTTON_LEFT and mouseEvent.pressed:
-			generate_tile(local_to_map(get_local_mouse_position()))
+			var tilePos:Vector2i = local_to_map(get_local_mouse_position())
+			var curvePos:Vector2 = Vector2.ZERO
+			curvePos.x = (tilePos.x as float) / (curveSize.x as float)
+			curvePos.y = (((curveSize.y / 2 - tilePos.y) * 2) as float) / (curveSize.y  as float)
+			print(".")
+			print("tilePos ",tilePos)
+			print("curvePos ",curvePos)

@@ -34,7 +34,7 @@ enabled = false
 
 [sub_resource type="Curve" id="Curve_074pv"]
 min_value = -1.0
-_data = [Vector2(0, 0.000972867), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 script = ExtResource("3_ho2oa")
 amp = 1.0

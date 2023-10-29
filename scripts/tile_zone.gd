@@ -34,17 +34,14 @@ func _ready() -> void:
 
 
 func set_tile(tilePos:Vector2i, tileType:Enum.TileType = Enum.TileType.VOID) -> void:
-
-	print("set cell")
 	if(tileType == Enum.TileType.VOID):
 		tileType = getTileType(tilePos)
-	print("tileType ", tileType)
-	
+
 	if tileType == Enum.TileType.EMPTY:
 		set_cell(0, tilePos, 0, emptyTilemapVector)
-	if tileType == Enum.TileType.ROCK:
+	elif tileType == Enum.TileType.ROCK:
 		set_cell(0, tilePos, 0, rockTilemapVector)
-	if tileType == Enum.TileType.SOIL:
+	elif tileType == Enum.TileType.SOIL:
 		set_cell(0, tilePos, 0, soilTilemapVector)
 
 
@@ -98,9 +95,9 @@ func curve_to_elevation(curvePos:Vector2, zonePos:Vector2) -> float:
 func curve_to_soil(curvePos:Vector2, zonePos:Vector2) -> float:
 	var soil:float = soilOctave.sampleOctave(curvePos.x)
 	var ampSum:float = soilOctave.amp if soilOctave.enabled else 0
-	
+
 	soil += soilNoiseOctave.sampleOctave(zonePos.x)
 	ampSum += soilNoiseOctave.amp if soilNoiseOctave.enabled else 0
-	
+
 	return soil / ampSum
 

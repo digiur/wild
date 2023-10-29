@@ -1,6 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://dc06a0uiwajg"]
+[gd_scene load_steps=11 format=3 uid="uid://dc06a0uiwajg"]
 
-[ext_resource type="Script" path="res://scripts/tile_world.gd" id="2_heltt"]
+[ext_resource type="Script" path="res://scripts/tile_zone.gd" id="2_heltt"]
 [ext_resource type="TileSet" uid="uid://hfa5pqqfenmq" path="res://resources/debug_tileset.tres" id="2_narmt"]
 [ext_resource type="Script" path="res://scripts/curve_octave.gd" id="3_ho2oa"]
 [ext_resource type="Script" path="res://scripts/noise_octave.gd" id="4_4wcvl"]
@@ -15,29 +15,16 @@ amp = 1.0
 freq = 1.0
 enabled = true
 wrapMode = 2
-sampleSpace = 1
 
 [sub_resource type="Curve" id="Curve_ms1eu"]
 min_value = -1.0
-_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.244095, -1), 0.0, 0.0, 0, 0, Vector2(0.254593, 1), 0.0, 0.0, 0, 0, Vector2(0.737533, 1), 0.0, 0.0, 0, 0, Vector2(0.745407, -1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.0650406, -1), 0.0, 0.0, 0, 0, Vector2(0.130081, 1), 0.0, 0.0, 0, 0, Vector2(0.869919, 1), 0.0, 0.0, 0, 0, Vector2(0.937669, -1), 0.0, 0.0, 0, 0]
 point_count = 5
 script = ExtResource("3_ho2oa")
-amp = 1.0
-freq = 0.5
+amp = 0.5
+freq = 4.0
 enabled = true
-wrapMode = 3
-sampleSpace = 0
-
-[sub_resource type="Curve" id="Curve_qpn1s"]
-min_value = -1.0
-_data = [Vector2(0, -1), 0.0, 2.8, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-script = ExtResource("3_ho2oa")
-amp = 1.0
-freq = 0.5
-enabled = true
-wrapMode = 1
-sampleSpace = 0
+wrapMode = 0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5oice"]
 script = ExtResource("4_4wcvl")
@@ -47,31 +34,30 @@ enabled = false
 
 [sub_resource type="Curve" id="Curve_074pv"]
 min_value = -1.0
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.000972867), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 script = ExtResource("3_ho2oa")
-amp = 0.5
-freq = 1.5
+amp = 1.0
+freq = 0.25
 enabled = true
-wrapMode = 1
-sampleSpace = 1
+wrapMode = 0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_t3xcm"]
 script = ExtResource("4_4wcvl")
 amp = 0.25
 scale = 1000.0
-enabled = true
+enabled = false
 
 [node name="BiomeTemplate" type="Node2D"]
 
-[node name="CurveZoneTemplate" type="TileMap" parent="."]
+[node name="TileZone" type="TileMap" parent="."]
 tile_set = ExtResource("2_narmt")
 format = 2
 script = ExtResource("2_heltt")
-zoneSize = Vector2i(100, 50)
-curveSize = Vector2i(15, 15)
-curveOffset = Vector2i(60, 0)
-curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_sf1iy"), SubResource("Curve_ms1eu"), SubResource("Curve_qpn1s")])
+zoneTiles = Vector2i(140, 70)
+curveTiles = Vector2i(26, 26)
+curveTilesOffset = Vector2i(52, 26)
+curveOctaves = Array[ExtResource("3_ho2oa")]([SubResource("Curve_sf1iy"), SubResource("Curve_ms1eu")])
 noiseOctaves = Array[ExtResource("4_4wcvl")]([SubResource("FastNoiseLite_5oice")])
 soilOctave = SubResource("Curve_074pv")
 soilNoiseOctave = SubResource("FastNoiseLite_t3xcm")
@@ -79,7 +65,10 @@ rockTilemapVector = Vector2i(0, 3)
 soilTilemapVector = Vector2i(1, 1)
 emptyTilemapVector = Vector2i(2, 3)
 
-[node name="DebugCamera2D" type="Camera2D" parent="."]
-position = Vector2(57, 56)
+[node name="DebugCamera2D" type="Camera2D" parent="." node_paths=PackedStringArray("tileZone")]
+position = Vector2(1124, 594)
+zoom = Vector2(0.5, 0.5)
 script = ExtResource("5_rpn0y")
 speed = 10.0
+tileZone = NodePath("../TileZone")
+color = Color(0, 1, 1, 1)

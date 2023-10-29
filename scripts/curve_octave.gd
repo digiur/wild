@@ -8,7 +8,6 @@ enum CurveWrapMode {WRAP, MIRROR, FLIP, FLAT}
 @export var freq:float = 1
 @export var enabled:bool = true
 @export var wrapMode:CurveWrapMode = CurveWrapMode.WRAP
-@export var sampleSpace:GameInfo.SampleSpace = GameInfo.SampleSpace.CURVE
 
 func _init() -> void:
 	min_value = -1

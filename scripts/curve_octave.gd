@@ -19,7 +19,7 @@ func sampleOctave(i:float) -> float:
 		CurveWrapMode.WRAP:
 			i = fposmod(i * freq, 1)
 		CurveWrapMode.MIRROR:
-			i = fposmod(absf(i - 0.5) * freq * 2, 1)
+			i = fposmod(absf(i) * freq, 1)
 		CurveWrapMode.FLIP:
 			if floori(i) % 2 == 0:
 				i = fposmod(i * freq, 1)

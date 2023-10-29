@@ -28,6 +28,7 @@ func _process(_delta: float) -> void:
 			if tileZone.get_cell_source_id(0, tilePos) == -1:
 				tileZone.set_tile(tilePos)
 
+
 func _unhandled_input(event:InputEvent) -> void:
 	if event is InputEventKey:
 		var inputEventKey:InputEventKey = event as InputEventKey
@@ -86,8 +87,8 @@ func _input(event:InputEvent) -> void:
 			var tileType:Enum.TileType = tileZone.getTileType(tilePos)
 			var zonePos:Vector2 = tileZone.map_to_zone(tilePos)
 			var curvePos:Vector2 =  tileZone.map_to_curve(tilePos)
-			var elevation:float = tileZone.curve_to_elevation(curvePos, zonePos)
-			var soil:float = tileZone.curve_to_soil(curvePos, zonePos)
+			var elevation:float = tileZone.curve_to_elevation(curvePos)
+			var soil:float = tileZone.curve_to_soil(curvePos)
 			print("==============================")
 			print("tilePos ", tilePos)
 			print("tileType ", tileType)

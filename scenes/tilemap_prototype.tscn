@@ -1,0 +1,84 @@
+[gd_scene load_steps=12 format=3 uid="uid://dc06a0uiwajg"]
+
+[ext_resource type="TileSet" uid="uid://dueqgvjkctscd" path="res://resources/pixel_tileset.tres" id="1_ldocs"]
+[ext_resource type="Script" path="res://scripts/tile_zone.gd" id="2_a3a36"]
+[ext_resource type="Script" path="res://scripts/curve_octave.gd" id="3_ntu8p"]
+[ext_resource type="Script" path="res://scripts/noise_octave.gd" id="4_tdsiv"]
+[ext_resource type="Script" path="res://scripts/tile_zone_debug.gd" id="5_j2qjn"]
+
+[sub_resource type="Curve" id="Curve_xcqph"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("3_ntu8p")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 2
+
+[sub_resource type="Curve" id="Curve_cck8l"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 2.0, 0, 1, Vector2(1, 1), 2.0, 0.0, 1, 0]
+point_count = 2
+script = ExtResource("3_ntu8p")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 1
+
+[sub_resource type="Curve" id="Curve_hp2fc"]
+min_value = -1.0
+_data = [Vector2(0.239316, -1), 0.0, 0.0, 0, 0, Vector2(0.247863, 1), 0.0, 0.0, 0, 0, Vector2(0.752137, 1), 0.0, 0.0, 0, 0, Vector2(0.752147, -1), 0.0, 0.0, 0, 0]
+point_count = 4
+script = ExtResource("3_ntu8p")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_avsc0"]
+script = ExtResource("4_tdsiv")
+amp = 1.0
+scale = 1000.0
+enabled = false
+
+[sub_resource type="Curve" id="Curve_074pv"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("3_ntu8p")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t3xcm"]
+script = ExtResource("4_tdsiv")
+amp = 0.25
+scale = 1000.0
+enabled = false
+
+[node name="TilemapPrototype" type="Node2D"]
+
+[node name="TileZone" type="TileMap" parent="."]
+tile_set = ExtResource("1_ldocs")
+format = 2
+script = ExtResource("2_a3a36")
+zoneTiles = Vector2i(280, 140)
+curveTiles = Vector2i(52, 52)
+curveTilesOffset = Vector2i(104, 52)
+surfaceOctaves = Array[ExtResource("3_ntu8p")]([SubResource("Curve_xcqph"), SubResource("Curve_cck8l"), SubResource("Curve_hp2fc")])
+surfaceNoiseOctaves = Array[ExtResource("4_tdsiv")]([SubResource("FastNoiseLite_avsc0")])
+soilOctave = SubResource("Curve_074pv")
+soilNoiseOctave = SubResource("FastNoiseLite_t3xcm")
+rockTilemapVector = Vector2i(0, 3)
+soilTilemapVector = Vector2i(1, 1)
+emptyTilemapVector = Vector2i(2, 3)
+
+[node name="TileZoneDebug" type="Camera2D" parent="." node_paths=PackedStringArray("tileZone")]
+position = Vector2(146, 72)
+zoom = Vector2(4, 4)
+script = ExtResource("5_j2qjn")
+speed = 10.0
+tileZone = NodePath("../TileZone")
+color = Color(0, 1, 1, 1)

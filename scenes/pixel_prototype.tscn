@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://653fjr4ei2lb"]
+
+[ext_resource type="Script" path="res://pixel_zone.gd" id="1_hoh1h"]
+[ext_resource type="Script" path="res://scripts/curve_octave.gd" id="2_4eicx"]
+[ext_resource type="Script" path="res://scripts/noise_octave.gd" id="3_ne723"]
+[ext_resource type="Script" path="res://pixel_zone_debug.gd" id="4_hbfdx"]
+
+[sub_resource type="Curve" id="Curve_7j1mf"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("2_4eicx")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 2
+
+[sub_resource type="Curve" id="Curve_8x538"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 2.0, 0, 1, Vector2(1, 1), 2.0, 0.0, 1, 0]
+point_count = 2
+script = ExtResource("2_4eicx")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 1
+
+[sub_resource type="Curve" id="Curve_lm4uy"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(0.247788, -0.997747), 0.0, 0.0, 0, 0, Vector2(0.252845, 1), 0.0, 0.0, 0, 0, Vector2(0.744627, 1), 0.0, 0.0, 0, 0, Vector2(0.750948, -1), 0.0, 0.0, 0, 0]
+point_count = 5
+script = ExtResource("2_4eicx")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0y17i"]
+script = ExtResource("3_ne723")
+amp = 1.0
+scale = 1000.0
+enabled = false
+
+[sub_resource type="Curve" id="Curve_prxmr"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("2_4eicx")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_crfo1"]
+script = ExtResource("3_ne723")
+amp = 1.0
+scale = 1000.0
+enabled = false
+
+[node name="PixelPrototype" type="Node2D"]
+
+[node name="PixelZone" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_hoh1h")
+zoneTiles = Vector2i(1400, 700)
+curveTiles = Vector2i(260, 260)
+curveTilesOffset = Vector2i(520, 260)
+surfaceOctaves = Array[ExtResource("2_4eicx")]([SubResource("Curve_7j1mf"), SubResource("Curve_8x538"), SubResource("Curve_lm4uy")])
+surfaceNoiseOctaves = Array[ExtResource("3_ne723")]([SubResource("FastNoiseLite_0y17i")])
+soilOctave = SubResource("Curve_prxmr")
+soilNoiseOctave = SubResource("FastNoiseLite_crfo1")
+
+[node name="PixelZoneDebug" type="Camera2D" parent="." node_paths=PackedStringArray("pixelZone")]
+position = Vector2(700, 350)
+script = ExtResource("4_hbfdx")
+pixelZone = NodePath("../PixelZone")

@@ -1,5 +1,5 @@
-class_name TileZone
-extends TileMap
+class_name PixelZone
+extends TextureRect
 
 @export_group("Zone")
 @export var zoneTiles:Vector2i = Vector2i(70, 30)
@@ -14,15 +14,15 @@ extends TileMap
 @export var soilOctave:CurveOctave
 @export var soilNoiseOctave:NoiseOctave
 
-@export_group("Tiles")
-@export var rockTilemapVector:Vector2i
-@export var soilTilemapVector:Vector2i
-@export var emptyTilemapVector:Vector2i
+@export_group("Colors")
+@export var emptyColor:Color = Color.LIGHT_SEA_GREEN
+@export var soilColor:Color = Color.DARK_GREEN
+@export var rockColor:Color = Color.SADDLE_BROWN
 
-
-@onready var tileSize:int = tile_set.tile_size.x
 @onready var halfZoneTiles:Vector2 = (zoneTiles as Vector2) / 2
 @onready var halfCurveTiles:Vector2 = (curveTiles as Vector2) / 2
+
+@onready var img:Image = Image.create(zoneTiles.x, zoneTiles.y, true, Image.FORMAT_RGBA8)
 
 # Do I want to round here?
 @onready var finalCurveTilesOffset:Vector2i =\
@@ -33,6 +33,7 @@ func _ready() -> void:
 	for x:int in range(zoneTiles.x):
 		for y:int in range(zoneTiles.y):
 			set_tile(Vector2i(x,y))
+	texture = ImageTexture.create_from_image(img)
 
 
 func set_tile(tilePos:Vector2i, tileType:Enum.TileType = Enum.TileType.VOID) -> void:
@@ -40,11 +41,11 @@ func set_tile(tilePos:Vector2i, tileType:Enum.TileType = Enum.TileType.VOID) -> 
 		tileType = getTileType(tilePos)
 
 	if tileType == Enum.TileType.EMPTY:
-		set_cell(0, tilePos, 0, emptyTilemapVector)
+		img.set_pixel(tilePos.x, tilePos.y, emptyColor)
 	elif tileType == Enum.TileType.ROCK:
-		set_cell(0, tilePos, 0, rockTilemapVector)
+		img.set_pixel(tilePos.x, tilePos.y, rockColor)
 	elif tileType == Enum.TileType.SOIL:
-		set_cell(0, tilePos, 0, soilTilemapVector)
+		img.set_pixel(tilePos.x, tilePos.y, soilColor)
 
 
 func getTileType(tilePos:Vector2i) -> Enum.TileType:

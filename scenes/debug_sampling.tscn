@@ -1,6 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://salu5nkys1yk"]
+[gd_scene load_steps=8 format=3 uid="uid://salu5nkys1yk"]
 
 [ext_resource type="Script" path="res://scripts/debug_sampling.gd" id="1_53cwv"]
+[ext_resource type="Script" path="res://scripts/curve_octave.gd" id="2_tdbx5"]
+[ext_resource type="Script" path="res://scripts/noise_octave.gd" id="3_g3ns1"]
 
 [sub_resource type="Curve" id="Curve_y7nq3"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -10,7 +12,27 @@ point_count = 2
 noise_type = 0
 fractal_octaves = 1
 
+[sub_resource type="Curve" id="Curve_cam4y"]
+min_value = -1.0
+_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+script = ExtResource("2_tdbx5")
+amp = 1.0
+freq = 1.0
+enabled = true
+wrapMode = 0
+sampleSpace = 0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fday1"]
+fractal_octaves = 1
+script = ExtResource("3_g3ns1")
+amp = 1.0
+scale = 1000.0
+enabled = true
+
 [node name="DebugSampling" type="Node"]
 script = ExtResource("1_53cwv")
 curve = SubResource("Curve_y7nq3")
 noise = SubResource("FastNoiseLite_jeoum")
+curveOctave = SubResource("Curve_cam4y")
+noiseOctave = SubResource("FastNoiseLite_fday1")

@@ -11,7 +11,7 @@ min_value = -1.0
 _data = [Vector2(0, -1), 0.0, 2.8, 0, 0, Vector2(0.99729, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, -1), 0.0, 0.0, 0, 0]
 point_count = 3
 script = ExtResource("3_ho2oa")
-amp = 1.0
+amp = 0.5
 freq = 1.0
 enabled = true
 wrapMode = 2
@@ -28,7 +28,7 @@ wrapMode = 0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5oice"]
 script = ExtResource("4_4wcvl")
-amp = 0.5
+amp = 0.2
 scale = 1000.0
 enabled = false
 
